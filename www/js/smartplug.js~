@@ -1,0 +1,42 @@
+
+'use strict';
+
+var SmartPlugData = {
+    service: "FFF0",
+    order: "FFF3",
+    notif: "FFF4",
+    onOrder: new Uint8Array([0x0f,0x06,0x03,0x00,0x01,0x00,0x00,0x05,0xFF,0xFF]),
+    offOrder: new Uint8Array([0x0f,0x06,0x03,0x00,0x00,0x00,0x00,0x04,0xFF,0xFF]),
+    statusOrder: new Uint8Array([0x0f,0x06,0x04,0x00,0x00,0x00,0x00,0x05,0xFF,0xFF])
+};
+
+
+function SmartPlug(deviceId,name,error){
+    this.deviceId=deviceId;
+    this.connected=false;
+    this.errorHandler=error;
+}
+
+SmartPlug.prototype.power = function(){
+};
+
+SmartPlug.prototype.state = function(){
+};
+
+SmartPlug.prototype.switchOn = function(){
+    ble.write(this.deviceId,SmartPlug.service,SmartPlug.order,SmartPlugData.onOrder.buffer,app.getStatus,app.onError);
+};
+
+SmartPlug.prototype.switchOff = function(){
+    ble.write(this.deviceId,SmartPlug.service,SmartPlug.order,SmartPlugData.offOrder.buffer,app.getStatus,app.onError);    
+};
+
+SmartPlug.prototype.connect = function(success,error){
+    ble.connect(this.deviceId, function(){
+	this.connected=true;
+	// set the notification handler
+	// set the timer for 5 sec. notification
+    }, this.errorHandler); 
+};
+
+
